@@ -1,0 +1,48 @@
+name: WorkflowTareaRR
+
+on:
+  schedule:
+    - cron: '20 19 * * *'
+    - cron: '30 23 * * *'
+    - cron: '45 19 * * 1'  # Ejecutar los lunes a las 15:45 (UTC-4)
+    - cron: '00 00 * * 1'  # Ejecutar los lunes a las 20:00 (UTC-4)
+  push:
+    branches:
+      - feature/*
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout git
+      uses: actions/checkout@v4
+
+    - name: Pruebas
+      run: |
+        echo "Lanzando las pruebas.."
+        echo "Pruebas realizadas con exito!"
+
+  build:  
+    runs-on: ubuntu-20.04
+    needs: [test]
+
+    steps:
+    - name: Dependencias y building
+      run: |
+        npm install
+        npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+    - name: Checkout git
+      uses: actions/checkout@v4
+
+    - name: Deploy
+      run: |
+        echo "Deployando.."
+        echo "Deploy realizado de manera existosa"
