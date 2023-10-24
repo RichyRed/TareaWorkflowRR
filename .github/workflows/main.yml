@@ -6,7 +6,7 @@ on:
     - cron: '00 00 * * 1'  # Ejecutar los lunes a las 20:00 (UTC-4)
   push:
     branches:
-      - feature/*
+      - 'feature/*'  # Asegúrate de que el nombre del branch esté entre comillas
   workflow_dispatch:
 
 jobs:
@@ -15,18 +15,26 @@ jobs:
 
     steps:
     - name: Checkout git
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2  # Usa v2 en lugar de v4
 
     - name: Pruebas
       run: |
         echo "Lanzando las pruebas.."
-        echo "Pruebas realizadas con exito!"
+        echo "Pruebas realizadas con éxito!"
 
   build:  
-    runs-on: ubuntu-20.04
-    needs: [test]
+    runs-on: ubuntu-latest  # Cambiado a ubuntu-latest
+    needs: test
 
     steps:
+    - name: Configurar Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14  # Elige la versión de Node.js que necesitas
+
+    - name: Checkout git
+      uses: actions/checkout@v2  # Usa v2 en lugar de v4
+
     - name: Dependencias y building
       run: |
         npm install
@@ -34,13 +42,13 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
 
     steps:
     - name: Checkout git
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2  # Usa v2 en lugar de v4
 
     - name: Deploy
       run: |
         echo "Deployando.."
-        echo "Deploy realizado de manera existosa"
+        echo "Deploy realizado de manera exitosa"
